@@ -1,0 +1,85 @@
+<div>
+  <nav class="navbar">
+    <label><strong>  Howdy {{ orgName }}!  </strong></label>
+    <label><strong><a href="#" class="nav-link">Sign Out</a></strong></label>
+    <label><strong><a routerLink="/student" class="nav-link">AggieEvents</a></strong></label>
+  </nav>
+</div>
+<div style="width: 400px; margine: auto;">
+  <div *ngIf="currentOrg" class="submit-form">
+    <div *ngIf="!submitted">
+      <div class="form-group">
+        <label for="name">Name</label>
+        <input
+          type="text"
+          class="form-control"
+          id="name"
+          required
+          [(ngModel)]="event.name"
+          name="name"
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="description">Description</label>
+        <input
+          type="text"
+          class="form-control"
+          id="description"
+          required
+          [(ngModel)]="event.description"
+          name="description"
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="date">Date</label>
+        <input
+          type="date"
+          class="form-control"
+          id="date"
+          required
+          [(ngModel)]="event.date"
+          name="date"
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="time">time</label>
+        <input
+          type="time"
+          class="form-control"
+          id="time"
+          required
+          [(ngModel)]="event.time"
+          name="time"
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="location">location</label>
+        <input
+          type="text"
+          class="form-control"
+          id="location"
+          required
+          [(ngModel)]="event.location"
+          name="location"
+        />
+      </div>
+
+      <button (click)="saveEvent()" class="btn btn-success">Submit Request</button>
+    </div>
+
+    <div *ngIf="submitted">
+      <h4>You submitted successfully!</h4>
+      <button class="btn btn-success" (click)="newEvent()">Create another event</button>
+    </div>
+    <a class="badge badge-warning" routerLink="/login/{{ orgName }}">
+      Return to events page
+    </a>
+  </div>
+  <div *ngIf="!currentOrg">
+    <p> you are not signed into an organization </p>
+  </div>
+</div>
