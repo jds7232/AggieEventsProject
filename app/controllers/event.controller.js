@@ -157,7 +157,7 @@ exports.approve = (req, res) => {
           .ignoreReports()
           .assignFlair({text: 'Exciting Flair Text', css_class: 'modpost'});
         console.log('logs --------------------');
-        res.send(res);
+        res.send('Event approved successfully');
 
         // TWITTER
       } else {
