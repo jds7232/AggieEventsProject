@@ -148,17 +148,14 @@ exports.approve = (req, res) => {
   })
     .then(num => {
       if (num == 1) {
-        res.send({
-          message: "Event has been modified"
-        });
-        // TWITTER
-
         // Reddit
-        reddit.post('api/submit', {
+        const response = reddit.post('api/submit', {
           sr: 'AggieEvents',
           title: req.body.name,
           text: req.body.description + ' at ' + req.body.location
         });
+        res.send(response);
+        // TWITTER
       } else {
         res.send({
           message: "ERROR: event was not found."
