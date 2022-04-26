@@ -151,13 +151,13 @@ exports.approve = (req, res) => {
           clientId: 'ZaiX0ZNSf0ffiknIc7ckHg',
           clientSecret: 'DpCTEWHiHgCZfQd4MXGSou7I3It5cQ'
         });
-        r.getSubreddit('AggieEvents').submitSelfpost({title: 'NEW EVENT: ' + req.body.name, text: req.body.description + ' at ' + req.body.location})
+        const response = r.getSubreddit('AggieEvents').submitSelfpost({title: 'NEW EVENT: ' + req.body.name, text: req.body.description + ' at ' + req.body.location})
           .sticky()
           .distinguish()
           .ignoreReports()
           .assignFlair({text: 'Exciting Flair Text', css_class: 'modpost'});
         console.log('logs --------------------');
-        res.send('Event approved successfully');
+        res.send(response);
 
         // TWITTER
       } else {
