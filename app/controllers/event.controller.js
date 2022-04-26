@@ -157,18 +157,18 @@ exports.approve = (req, res) => {
           .ignoreReports()
           .assignFlair({text: 'Exciting Flair Text', css_class: 'modpost'});
         console.log('logs --------------------');
-        res.send(response);
+        res.send('Event accepted successfully');
 
         // TWITTER
       } else {
         res.send({
-          message: "ERROR: event was not found."
+          message: 'ERROR: event was not found.'
         });
       }
     })
     .catch(err => {
       res.status(500).send({
-        message: "ERROR: couldn't update event with id " + id
+        message: 'ERROR: couldnt update event with id ' + id
       });
     });
 };
