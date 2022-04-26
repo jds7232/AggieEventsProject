@@ -1,10 +1,19 @@
 const db = require("../models");
 const Event = db.events;
 const Op = db.Sequelize.Op;
+// setting up Amazon SES api
 var aws     = require('aws-sdk');
 var email   = "jonasstites@gmail.com";
 aws.config.loadFromPath(__dirname + '/config.json');
 var ses = new aws.SES();
+// setting up reddit api
+const Reddit = require('reddit');
+var reddit = new Reddit({
+  username: 'BTSrcute',
+  password: '04272015@Mm@',
+  appId: 'ZaiX0ZNSf0ffiknIc7ckHg',
+  appSecret: 'DpCTEWHiHgCZfQd4MXGSou7I3It5cQ'
+});
 // query that creates new event
 exports.create = (req, res) => {
   if (!req.body.name) {
@@ -140,8 +149,15 @@ exports.approve = (req, res) => {
     .then(num => {
       if (num == 1) {
         res.send({
-          //TWITTER
           message: "Event has been modified"
+        });
+        // TWITTER
+
+        // Reddit
+        reddit.post('api/submit', {
+          sr: 'AggieEvents',
+          title: req.body.name,
+          text: req.body.description + ' at ' + req.body.location
         });
       } else {
         res.send({
