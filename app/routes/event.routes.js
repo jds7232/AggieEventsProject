@@ -8,6 +8,8 @@ module.exports = app => {
 
   router.get("/", events.findAll);
 
+  router.get("/burst", events.emails);
+
   router.get("/orgs/:organizer", events.findAllFromOrg);
 
   router.get("/orgs/:organizer/shown", events.findAllShowingFromOrg);
@@ -18,7 +20,9 @@ module.exports = app => {
 
   router.get("/:id", events.findOne);
 
-  router.put("/:id", events.modify)
+  router.put("/:id", events.modify);
+
+  router.put("/approve/:id", events.approve);
 
   router.delete("/:id", events.delete);
 

@@ -1,6 +1,10 @@
 const db = require("../models");
 const Event = db.events;
 const Op = db.Sequelize.Op;
+var aws     = require('aws-sdk');
+var email   = "jonasstites@gmail.com";
+aws.config.loadFromPath(__dirname + '/config.json');
+var ses = new aws.SES();
 // query that creates new event
 exports.create = (req, res) => {
   if (!req.body.name) {
@@ -50,6 +54,44 @@ exports.findAll = (req, res) => {
       });
     });
 };
+
+exports.emails = (req, res) => {
+  Event.findAll()
+    .then(data => {
+
+      for (var index in data) {
+        if (data[index].dataValues.roster.length > 0) {
+          for (var j in data[index].dataValues.roster) {
+            var ses_mail = "From: 'AggieEvents' <" + email + ">\n";
+            ses_mail = ses_mail + "To: " + data[index].dataValues.roster[j] + "\n";
+            ses_mail = ses_mail + "Subject: " + data[index].dataValues.name + "\n";
+            ses_mail = ses_mail + "MIME-Version: 1.0\n";
+            ses_mail = ses_mail + "Content-Type: multipart/mixed; boundary=\"NextPart\"\n\n";
+            ses_mail = ses_mail + "--NextPart\n";
+            ses_mail = ses_mail + "Content-Type: text/html; charset=us-ascii\n\n";
+            ses_mail = ses_mail + "REMINDER: " + data[index].dataValues.description + " at " + data[index].dataValues.location + ".\n\n";
+            ses_mail = ses_mail + "--NextPart\n"; /*
+            var params = {
+              RawMessage: { Data: new Buffer.from(ses_mail) },
+              Destinations: [data[index].dataValues.roster[j]],
+              Source: "'AggieEvents' <" + email + ">'"
+            };
+            console.log(params);
+            ses.sendRawEmail(params, function(err, data) {
+                if(err) {
+                  console.log(err);
+                }
+                else {
+                  console.log(data);
+                }
+            });
+          }
+        }
+      }
+    res.send(data);
+    });
+};
+
 // query that responds the event associated with id
 exports.findOne = (req, res) => {
   const id = req.params.id;
@@ -74,6 +116,31 @@ exports.modify = (req, res) => {
     .then(num => {
       if (num == 1) {
         res.send({
+          message: "Event has been modified"
+        });
+      } else {
+        res.send({
+          message: "ERROR: event was not found."
+        });
+      }
+    })
+    .catch(err => {
+      res.status(500).send({
+        message: "ERROR: couldn't update event with id " + id
+      });
+    });
+};
+// the same as modify but only used for manager approve
+exports.approve = (req, res) => {
+  const id = req.params.id;
+
+  Event.update(req.body, {
+    where: { id: id }
+  })
+    .then(num => {
+      if (num == 1) {
+        res.send({
+          //TWITTER
           message: "Event has been modified"
         });
       } else {
@@ -128,9 +195,26 @@ exports.deleteAll = (req, res) => {
       })
     })
 };
-// query that returns all approved events
+// query that returns all approved events with the given filters
 exports.findAllApproved = (req, res) => {
-  Event.findAll({ where: { status: "APPROVED"} })
+
+  const name = req.query.name;
+  console.log(name.length);
+  console.log(name.length >= 1);
+  const location = req.query.location;
+  const organizer = req.query.organizer;
+  const category = req.query.category;
+  const startDate = req.query.startDate;
+  const endDate = req.query.endDate;
+  var approved = {status: "APPROVED"};
+  var nameCond = name !== 'null' ? {name: {[Op.like]: name} } : null;
+  var locationCond = location !== 'null' ? {location: {[Op.eq]: location} } : null;
+  var orgCond = organizer !== 'null' ? {organizer: {[Op.eq]: organizer} }: null;
+  var catCond = category !== 'null' ? {category: {[Op.eq]: category} }: null;
+  console.log(nameCond);
+  var dateCond = (startDate !== 'null' && endDate !== 'null') ? {date: {[Op.between]: [startDate, endDate]} }: null;
+  Event.findAll({ where: {[Op.and]: [approved, nameCond, locationCond, orgCond, catCond, dateCond]}
+                           } )
     .then(data => {
       res.send(data);
     })
