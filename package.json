@@ -4,7 +4,7 @@
   "description": "nodejs and express restful apis and postgresql",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
     "nodejs",
@@ -12,8 +12,7 @@
     "sequelize",
     "postgresql",
     "rest",
-    "api",
-    "aws-sdk"
+    "api"
   ],
   "author": "Jonas",
   "license": "ISC",
@@ -24,6 +23,6 @@
     "pg": "^8.7.3",
     "pg-hstore": "^2.3.4",
     "sequelize": "^6.17.0",
-    "aws-sdk": "*"
+    "aws-sdk": "~2.1.35"
   }
 }

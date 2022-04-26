@@ -19,7 +19,6 @@ db.sequelize.sync();
 app.get("/", (req, res) => {
   res.send("why are u here");
 });
-
 require("./app/routes/event.routes")(app);
 require("./app/routes/organization.routes")(app);
 
