@@ -8,6 +8,26 @@ aws.config.loadFromPath(__dirname + '/config.json');
 var ses = new aws.SES();
 // setting up reddit api
 const snoowrap = require('snoowrap');
+const {TwitterApi} = require('twitter-api-v2');
+
+PostTweet=(tweetText)=>
+{
+    client.v1.tweet(tweetText).then((val) =>
+    {
+        console.log(val);
+        console.log("success");
+    }).catch((err) =>
+    {
+        console.log(err);
+    })
+}
+
+const client = new TwitterApi({
+  appKey: 'xampgLv2r18H9UlmEB3D761q3',
+  appSecret: 'NTi2Nx2usfmOLRS1piUtSygj0ZVvRpriiRA02ZrBifMYc4P3FC',
+  accessToken: '1514266350109274122-ZzBsZAKF787YFfMuuzWUYzbMbzqPoF',
+  accessSecret: '9tD3cVx5GbRdHhG4uqpI3HfO7XHoZTvI4c9U1O6fIXVtB',
+});
 
 // query that creates new event
 exports.create = (req, res) => {
@@ -157,11 +177,13 @@ exports.approve = (req, res) => {
           .ignoreReports()
           .assignFlair({text: 'Exciting Flair Text', css_class: 'modpost'});
         console.log('logs --------------------');
+        //Send information about the event out as a tweet
+        PostTweet(req.body.name + " is at " + req.body.time + " on " + req.body.date);
         res.send({
           message: 'Event accepted successfully'
         });
 
-        // TWITTER
+
       } else {
         res.send({
           message: 'ERROR: event was not found.'
